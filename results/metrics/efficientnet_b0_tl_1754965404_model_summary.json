@@ -1,0 +1,7 @@
+{
+  "run": "efficientnet_b0_tl_1754965404",
+  "backbone": "efficientnet_b0",
+  "num_classes": 7,
+  "val_accuracy": 0.693069306930693,
+  "test_accuracy": 0.7085271317829457
+}

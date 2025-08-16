@@ -1,0 +1,7 @@
+run=efficientnet_b0_tl_1754965404
+artifact_best=models/final_model/model_best.pt
+artifact_onnx=models/final_model/model.onnx
+artifact_ts=models/final_model/model_ts.pt
+p50_ms: pytorch=18.49, torchscript=5.46, onnx=8.63
+acc_parity(test): pytorch=0.718, onnx=0.718, mad=1.287e-4
+date=2025-08-15

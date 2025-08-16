@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.env
+
+# Data (keep only metadata)
+data/raw/
+data/processed/
+data/train/
+data/val/
+data/test/
+!data/metadata/
+!data/metadata/classes.json
+
+# Results & logs
+results/runs/
+results/predictions/
+results/plots/
+results/metrics/*_robustness.png
+
+# Models (keep final_model, ignore training ckpts)
+models/checkpoints/
+models/export/
+!models/final_model/
+models/final_model/*.onnx
+models/final_model/*.pt
+
+# Notebooks checkpoints
+.ipynb_checkpoints/
+
+# OS/Editor
+.DS_Store
+Thumbs.db
+.vscode/

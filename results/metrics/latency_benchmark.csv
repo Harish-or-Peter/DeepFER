@@ -1,0 +1,7 @@
+timestamp,backend,source,frames,duration_s,fps_avg,det_rate
+2025-08-15T17:14:56,mediapipe,0,800,27.21,29.4,1.0
+2025-08-15T17:20:29,efficientnet_b0_tl_1754965404,mediapipe,0,900,31.056,28.98,0.78,14.31,0.25,0.45,True
+pytorch-efficientnet_b0,1,224,18.49,24.02,16.87,54.1,200
+torchscript,1,224,5.46,6.87,5.66,183.3,200
+onnxruntime(CUDAExecutionProvider),1,224,8.63,10.72,8.76,115.8,200
+torchscript,1,224,4.8,6.64,5.41,208.4,200

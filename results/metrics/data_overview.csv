@@ -1,0 +1,15 @@
+split,class,count
+train,angry,3993
+train,disgust,436
+train,fear,4103
+train,happy,7164
+train,neutral,4982
+train,sad,4938
+train,surprise,3205
+val,angry,960
+val,disgust,111
+val,fear,1018
+val,happy,1825
+val,neutral,1216
+val,sad,1139
+val,surprise,797

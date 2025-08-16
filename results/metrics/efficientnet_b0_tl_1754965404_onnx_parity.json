@@ -1,0 +1,8 @@
+{
+  "run": "efficientnet_b0_tl_1754965404",
+  "split": "test",
+  "acc_pytorch": 0.718,
+  "acc_onnx": 0.718,
+  "mean_abs_prob_diff": 0.0001287470804527402,
+  "n": 500
+}

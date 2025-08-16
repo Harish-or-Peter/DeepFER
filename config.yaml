@@ -1,0 +1,10 @@
+paths:
+  data_root: "./data"
+  raw_train: "./data/train"
+  raw_val: "./data/val"
+  metadata: "./data/metadata"
+  results: "./results"
+
+data:
+  classes: ["angry","disgust","fear","happy","neutral","sad","surprise"]
+  image_size: 224

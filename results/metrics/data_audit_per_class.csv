@@ -1,0 +1,15 @@
+split,class,count,split_total,pct_within_split
+test,angry,87,645,0.1349
+test,disgust,9,645,0.014
+test,fear,90,645,0.1395
+test,happy,177,645,0.2744
+test,neutral,117,645,0.1814
+test,sad,104,645,0.1612
+test,surprise,61,645,0.0946
+train,angry,3822,27471,0.1391
+train,disgust,378,27471,0.0138
+train,fear,3887,27471,0.1415
+train,happy,7043,27471,0.2564
+train,neutral,4866,27471,0.1771
+train,sad,4809,27471,0.1751
+train,surprise,2666,27471,0.097

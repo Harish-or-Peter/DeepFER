@@ -1,0 +1,43 @@
+{
+  "splits": {
+    "train": {
+      "total": 27471,
+      "corrupt": 0,
+      "non_image": 0,
+      "min_size": [
+        48,
+        48
+      ],
+      "max_size": [
+        48,
+        48
+      ]
+    },
+    "test": {
+      "total": 645,
+      "corrupt": 0,
+      "non_image": 0,
+      "min_size": [
+        48,
+        48
+      ],
+      "max_size": [
+        48,
+        48
+      ]
+    }
+  },
+  "global": {
+    "total": 28116,
+    "corrupt": 0,
+    "non_image": 0,
+    "min_size": [
+      48,
+      48
+    ],
+    "max_size": [
+      48,
+      48
+    ]
+  }
+}

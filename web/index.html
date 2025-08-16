@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>DeepFER Live</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <style>
+    :root{
+      --bg:#0e1320; --panel:#171c2b; --text:#e8ecf3; --muted:#a9b2c7; --accent:#4ea1ff; --ok:#26d07c; --warn:#ffb02e;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial}
+    h1{font-weight:700;font-size:20px;margin:16px}
+    .wrap{max-width:1240px;margin:0 auto;padding:8px 16px 24px}
+    .grid{display:grid;grid-template-columns:2fr 1fr;gap:16px}
+    @media (max-width: 980px){.grid{grid-template-columns:1fr}}
+    .panel{background:var(--panel);border-radius:12px;padding:16px;box-shadow:0 1px 0 rgba(255,255,255,.04) inset}
+    .viewgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .canvasbox{position:relative;border-radius:8px;overflow:hidden;background:#000}
+    canvas,video{width:100%;height:auto;display:block}
+    .tag{display:inline-block;padding:4px 10px;border-radius:999px;background:#111828;color:#9fb4d0;font-size:12px}
+    .metrics{display:flex;gap:10px;align-items:center;margin:10px 0 4px}
+    .bars{margin-top:8px}
+    .bar{height:10px;background:#0d1321;border-radius:999px;overflow:hidden;margin:10px 0 14px}
+    .bar>span{display:block;height:100%;background:linear-gradient(90deg,#3aa0ff,#7cc8ff)}
+    .row{display:flex;justify-content:space-between;font-size:13px;color:var(--muted)}
+    .controls label{display:block;margin:8px 0 4px;font-size:13px;color:#b9c4da}
+    .controls input, .controls select{width:100%;padding:10px 12px;background:#0f1525;border:1px solid #26304a;color:#e7eefc;border-radius:8px}
+    .controls .split{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:10px;padding:10px 14px;font-weight:600;cursor:pointer}
+    .btn.primary{background:var(--accent);color:#061123}
+    .btn.ghost{background:#111827;color:#cdd6ea}
+    .rowl{display:flex;gap:12px;align-items:center;margin-top:12px}
+    .topline{position:absolute;top:8px;left:8px;background:rgba(0,0,0,.6);padding:6px 8px;border-radius:8px;font-size:12px}
+    .status{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:#0f1525;color:#9fb4d0}
+    .dot{width:8px;height:8px;border-radius:50%}
+    .dot.run{background:var(--ok)} .dot.stop{background:#d9534f}
+    .legend{font-size:12px;color:#93a6c7}
+    .help{font-size:13px;color:#8ea2c8;margin-top:10px}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>DeepFER Live</h1>
+
+  <div class="grid">
+    <!-- Left: Video + Prediction -->
+    <div class="panel">
+      <div class="viewgrid">
+        <div class="canvasbox">
+          <div class="topline legend">webcam</div>
+          <video id="video" autoplay muted playsinline></video>
+        </div>
+        <div class="canvasbox">
+          <div class="topline legend" id="predTitle">prediction</div>
+          <canvas id="predCanvas" width="640" height="480"></canvas>
+        </div>
+      </div>
+
+      <div class="metrics">
+        <span class="status"><span class="dot stop" id="dot"></span><span id="runState">idle</span></span>
+        <span class="tag">FPS <span id="fps">0</span></span>
+        <span class="tag">API <span id="api">0</span> ms</span>
+        <span class="tag">Top-1 <span id="top1">–</span></span>
+      </div>
+
+      <div id="bars" class="bars"></div>
+      <div class="help">Tip: higher “Unknown threshold” or “Min face score” reduces false positives. If the right view turns black, the server likely rejected the frame (too dark / no face).</div>
+    </div>
+
+    <!-- Right: Controls -->
+    <div class="panel controls">
+      <label>Backend URL
+        <input id="url" value="http://127.0.0.1:8000">
+      </label>
+
+      <div class="split">
+        <div>
+          <label>Engine</label>
+          <select id="engine">
+            <option value="onnx">onnx</option>
+            <option value="torchscript">torchscript</option>
+            <option value="pytorch">pytorch</option>
+          </select>
+        </div>
+        <div>
+          <label>Interval (ms)</label>
+          <input id="interval" type="number" value="240" min="80" max="1000">
+        </div>
+      </div>
+
+      <div class="split">
+        <div>
+          <label>Unknown threshold (0–1)</label>
+          <input id="uth" type="number" step="0.01" min="0.2" max="0.9" value="0.5">
+        </div>
+        <div>
+          <label>Min face score (0–1)</label>
+          <input id="minFace" type="number" step="0.05" min="0.3" max="0.95" value="0.6">
+        </div>
+      </div>
+
+      <div class="split">
+        <div>
+          <label>JPEG q (0.6–0.95)</label>
+          <input id="jpeg" type="number" step="0.05" min="0.6" max="0.95" value="0.8">
+        </div>
+        <div>
+          <label class="legend">Flags</label>
+          <div class="rowl">
+            <label><input type="checkbox" id="tta"> TTA</label>
+            <label><input type="checkbox" id="detect" checked> Face detect</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="rowl">
+        <button class="btn primary" id="start">Start</button>
+        <button class="btn ghost" id="stop">Stop</button>
+        <button class="btn ghost" id="shot">Snapshot</button>
+      </div>
+
+      <div style="margin-top:12px">
+        <div class="legend">What this does</div>
+        <div class="help">
+          Streams webcam frames → encodes to JPEG → POSTs to <code>/predict-b64</code>.
+          Server runs face detection (optional), rejects dark/face-less frames as “unknown”,
+          classifies with your model, and returns probabilities for the right panel.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const els = {
+    video: document.getElementById('video'),
+    pred:  document.getElementById('predCanvas'),
+    bars:  document.getElementById('bars'),
+    url:   document.getElementById('url'),
+    engine:document.getElementById('engine'),
+    interval:document.getElementById('interval'),
+    jpeg:  document.getElementById('jpeg'),
+    uth:   document.getElementById('uth'),
+    minFace: document.getElementById('minFace'),
+    tta:   document.getElementById('tta'),
+    detect:document.getElementById('detect'),
+    start: document.getElementById('start'),
+    stop:  document.getElementById('stop'),
+    shot:  document.getElementById('shot'),
+    dot:   document.getElementById('dot'),
+    state: document.getElementById('runState'),
+    fps:   document.getElementById('fps'),
+    api:   document.getElementById('api'),
+    top1:  document.getElementById('top1'),
+    title: document.getElementById('predTitle')
+  };
+
+  let timer=null, lastT=performance.now(), frames=0;
+
+  const ctxPred = els.pred.getContext('2d');
+
+  function setRunning(on){
+    els.dot.className = 'dot ' + (on?'run':'stop');
+    els.state.textContent = on ? 'running' : 'idle';
+  }
+
+  async function openCam(){
+    const stream = await navigator.mediaDevices.getUserMedia({video:{width:{ideal:640}, height:{ideal:480}}, audio:false});
+    els.video.srcObject = stream;
+    await els.video.play();
+  }
+
+  function drawFrameToPred(){
+    // mirror the webcam frame into right canvas so it’s never black
+    const w = els.pred.width, h = els.pred.height;
+    // keep aspect
+    const vw = els.video.videoWidth, vh = els.video.videoHeight;
+    const scale = Math.min(w/vw, h/vh);
+    const dw = Math.round(vw*scale), dh = Math.round(vh*scale);
+    const dx = Math.floor((w-dw)/2), dy = Math.floor((h-dh)/2);
+    ctxPred.fillStyle = '#000'; ctxPred.fillRect(0,0,w,h);
+    ctxPred.drawImage(els.video, dx, dy, dw, dh);
+    return {dx,dy,dw,dh};
+  }
+
+  function barsInit(labels){
+    els.bars.innerHTML = '';
+    labels.forEach(lbl=>{
+      const row = document.createElement('div');
+      row.className='row';
+      const name = document.createElement('span'); name.textContent = lbl;
+      const val = document.createElement('span'); val.id = 'v-'+lbl; val.textContent='0%';
+      row.appendChild(name); row.appendChild(val);
+      const bar = document.createElement('div'); bar.className='bar';
+      const span = document.createElement('span'); span.id='b-'+lbl; span.style.width='0%';
+      bar.appendChild(span);
+      els.bars.appendChild(row); els.bars.appendChild(bar);
+    });
+  }
+
+  async function fetchLabels(){
+    const r = await fetch(els.url.value.replace(/\/$/,'') + '/labels');
+    const j = await r.json();
+    barsInit(j.labels);
+  }
+
+  async function tick(){
+    const {dx,dy,dw,dh} = drawFrameToPred();
+
+    // encode JPEG
+    const q = Math.max(0.6, Math.min(0.95, Number(els.jpeg.value)||0.8));
+    const dataUrl = els.pred.toDataURL('image/jpeg', q);
+
+    const t0 = performance.now();
+    const body = {
+      image_b64: dataUrl,
+      engine: els.engine.value,
+      use_tta: els.tta.checked,
+      detect_face: els.detect.checked,
+      unknown_thresh: Number(els.uth.value||'0.5'),
+      min_face_score: Number(els.minFace.value||'0.6'),
+      topk: 7
+    };
+    let out = null;
+    try{
+      const r = await fetch(els.url.value.replace(/\/$/,'') + '/predict-b64', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(body)
+      });
+      out = await r.json();
+    }catch(e){ /* ignore single errors */ }
+
+    const dt = performance.now()-t0;
+    els.api.textContent = dt.toFixed(1);
+
+    if(out && out.top1){
+      const t1 = out.top1;
+      els.top1.textContent = `${t1.label} ${(t1.prob*100).toFixed(1)}%`;
+      // bars
+      if(out.topk){
+        out.topk.forEach(o=>{
+          const b = document.getElementById('b-'+o.label);
+          const v = document.getElementById('v-'+o.label);
+          if(b){ b.style.width = `${(o.prob*100).toFixed(1)}%`; }
+          if(v){ v.textContent = `${(o.prob*100).toFixed(1)}%`; }
+        });
+      }
+      // overlay text
+      ctxPred.fillStyle = 'rgba(0,0,0,0.55)';
+      ctxPred.fillRect(dx+8, dy+8, 170, 28);
+      ctxPred.fillStyle = '#fff';
+      ctxPred.font = 'bold 14px Inter, system-ui, Arial';
+      ctxPred.fillText(`${t1.label} ${(t1.prob*100).toFixed(1)}%`, dx+16, dy+27);
+      if(out.unknown){
+        ctxPred.strokeStyle = '#ffb02e'; ctxPred.lineWidth = 3;
+        ctxPred.strokeRect(dx+4, dy+4, dw-8, dh-8);
+      }
+    }
+
+    frames++;
+    const now = performance.now();
+    if(now - lastT > 1000){
+      els.fps.textContent = (frames*1000/(now-lastT)).toFixed(1);
+      frames=0; lastT=now;
+    }
+  }
+
+  function start(){
+    if(timer) return;
+    setRunning(true);
+    const iv = Math.max(80, Number(els.interval.value)||240);
+    timer = setInterval(tick, iv);
+  }
+  function stop(){ if(timer){ clearInterval(timer); timer=null; } setRunning(false); }
+  function snapshot(){ const a=document.createElement('a'); a.href=els.pred.toDataURL('image/png'); a.download='frame.png'; a.click(); }
+
+  // bootstrap
+  (async function(){
+    await openCam();
+    await fetchLabels();
+    drawFrameToPred();
+  })();
+
+  els.start.onclick = start;
+  els.stop.onclick = stop;
+  els.shot.onclick = snapshot;
+  window.addEventListener('beforeunload', stop);
+</script>
+</body>
+</html>

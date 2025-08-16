@@ -1,0 +1,83 @@
+ERROR during train_transfer.py
+Traceback (most recent call last):
+  File "C:\Users\Harish\Desktop\Harish\M.Sc\DeepFER_Project\scripts\train_transfer.py", line 332, in <module>
+    main()
+  File "C:\Users\Harish\Desktop\Harish\M.Sc\DeepFER_Project\scripts\train_transfer.py", line 252, in main
+    best_val_head = train_loop(
+                    ^^^^^^^^^^^
+  File "C:\Users\Harish\Desktop\Harish\M.Sc\DeepFER_Project\scripts\train_transfer.py", line 169, in train_loop
+    train_loss, train_acc = train_epoch(
+                            ^^^^^^^^^^^^
+  File "C:\Users\Harish\Desktop\Harish\M.Sc\DeepFER_Project\scripts\train_transfer.py", line 150, in train_epoch
+    logits = model(xb)
+             ^^^^^^^^^
+  File "C:\Users\Harish\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Harish\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Harish\AppData\Roaming\Python\Python312\site-packages\torchvision\models\efficientnet.py", line 344, in forward
+    return self._forward_impl(x)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Harish\AppData\Roaming\Python\Python312\site-packages\torchvision\models\efficientnet.py", line 334, in _forward_impl
+    x = self.features(x)
+        ^^^^^^^^^^^^^^^^
+  File "C:\Users\Harish\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Harish\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Harish\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\container.py", line 244, in forward
+    input = module(input)
+            ^^^^^^^^^^^^^
+  File "C:\Users\Harish\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Harish\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Harish\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\container.py", line 244, in forward
+    input = module(input)
+            ^^^^^^^^^^^^^
+  File "C:\Users\Harish\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Harish\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Harish\AppData\Roaming\Python\Python312\site-packages\torchvision\models\efficientnet.py", line 165, in forward
+    result = self.block(input)
+             ^^^^^^^^^^^^^^^^^
+  File "C:\Users\Harish\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Harish\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Harish\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\container.py", line 244, in forward
+    input = module(input)
+            ^^^^^^^^^^^^^
+  File "C:\Users\Harish\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Harish\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Harish\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\container.py", line 244, in forward
+    input = module(input)
+            ^^^^^^^^^^^^^
+  File "C:\Users\Harish\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Harish\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Harish\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\conv.py", line 548, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Harish\AppData\Roaming\Python\Python312\site-packages\torch\nn\modules\conv.py", line 543, in _conv_forward
+    return F.conv2d(
+           ^^^^^^^^^
+RuntimeError: [enforce fail at alloc_cpu.cpp:121] data. DefaultCPUAllocator: not enough memory: you tried to allocate 14450688 bytes.
